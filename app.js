@@ -36,6 +36,10 @@
   const soundBtn = document.getElementById("sound");
   const languageBtn = document.getElementById("language");
   const tutorialBtn = document.getElementById("tutorial");
+  const campaignBtn = document.getElementById("campaign");
+
+  const fxLayer = document.getElementById("fxLayer");
+  const boardFrame = boardEl ? boardEl.closest(".board-frame") : null;
 
   const tutorialOverlay = document.getElementById("tutorialOverlay");
   const tutorialKicker = document.getElementById("tutorialKicker");
@@ -78,7 +82,7 @@
       "ui.briefingText": "Match to generate orders. Orders resolve instantly, then the enemy fires.",
       "ui.specials": "Specials",
       "ui.specials.stripe": "Match 4: line strike (row/column)",
-      "ui.specials.bomb": "Match 5: bomb (clears one color)",
+      "ui.specials.bomb": "Match 5: bomb (removes one color)",
       "ui.syncNote": "Cascades increase Sync and scale everything you do.",
 
       "ui.legend.red": "Attack: deal damage",
@@ -92,7 +96,7 @@
       "ui.briefingText": "Match to generate orders. Orders resolve instantly, then the enemy fires.",
       "ui.specials": "Specials",
       "ui.specials.stripe": "Match 4: line strike (row/column)",
-      "ui.specials.bomb": "Match 5: bomb (clears one color)",
+      "ui.specials.bomb": "Match 5: bomb (removes one color)",
       "ui.syncNote": "Cascades increase Sync and scale everything you do.",
 
       "ui.legend.red": "Attack: deal damage",
@@ -106,20 +110,65 @@
       "ui.how.1": "Every swap is a combat action. Clear fast to survive the wave.",
       "ui.how.2": "Red hits the enemy. Green repairs the base. Teal adds shields.",
       "ui.how.3": "Blue disrupts incoming fire. Yellow boosts your damage output.",
-      "ui.how.4": "Match 4 creates a line-clear strike. Match 5 creates a tactical bomb.",
+      "ui.how.4": "Match 4 creates a line strike. Match 5 creates a tactical bomb.",
       "ui.how.5": "Win by dropping enemy hull to 0 before time runs out (and before your base breaks).",
-      "ui.tips.1": "Cascades raise Sync. Higher Sync makes every clear more effective.",
-      "ui.tips.2": "Save striped jewels for panic clears or to finish a wave.",
+      "ui.tips.1": "Cascades raise Sync. Higher Sync boosts every match effect.",
+      "ui.tips.2": "Save striped jewels for panic turns or finishing blows.",
       "ui.tips.3": "If shields are up, you can gamble on bigger combos.",
 
       "ui.soundOn": "Sound: On",
       "ui.soundOff": "Sound: Off",
       "ui.language": "Language: {lang}",
       "ui.tutorial": "Tutorial",
+      "ui.campaign": "Campaign",
       "ui.next": "Next",
       "ui.back": "Back",
       "ui.skip": "Skip",
       "ui.done": "Done",
+
+      "campaign.1.kicker": "Mission 1/10",
+      "campaign.1.title": "Goal & Loop",
+      "campaign.1.text": "Win by dropping Enemy Hull to 0. Every move spends Time and triggers an enemy shot.",
+
+      "campaign.2.kicker": "Mission 2/10",
+      "campaign.2.title": "Read The HUD",
+      "campaign.2.text": "Top numbers track your run. Bars track Base HP/shields, Enemy Hull, and Time Remaining.",
+
+      "campaign.3.kicker": "Mission 3/10",
+      "campaign.3.title": "Controls",
+      "campaign.3.text": "New Game resets the run. Shuffle rerolls the board if you're stuck. Sound/Language are cosmetic.",
+
+      "campaign.4.kicker": "Mission 4/10",
+      "campaign.4.title": "Make A Match",
+      "campaign.4.text": "Swap the highlighted gems to create a match (3+). Watch the Combat Log update.",
+
+      "campaign.5.kicker": "Mission 5/10",
+      "campaign.5.title": "Enemy Counterfire",
+      "campaign.5.text": "Make any move. After the matched gems disappear and the board settles, the enemy fires. Shields absorb first.",
+
+      "campaign.6.kicker": "Mission 6/10",
+      "campaign.6.title": "Build Shields",
+      "campaign.6.text": "Match Teal to build shields. Then take a hit and watch shields absorb damage.",
+
+      "campaign.7.kicker": "Mission 7/10",
+      "campaign.7.title": "Repair",
+      "campaign.7.text": "Match Green to repair the base. Repairs restore Base HP.",
+
+      "campaign.8.kicker": "Mission 8/10",
+      "campaign.8.title": "EMP",
+      "campaign.8.text": "Match Blue to add EMP. EMP reduces the next enemy shot.",
+
+      "campaign.9.kicker": "Mission 9/10",
+      "campaign.9.title": "Specials",
+      "campaign.9.text": "Match 4 creates a striped strike. Match 5 creates a bomb. Use them to remove more gems and spike damage.",
+
+      "campaign.10.kicker": "Mission 10/10",
+      "campaign.10.title": "Finish The Enemy",
+      "campaign.10.text": "Drop Enemy Hull to 0. Use attack matches and specials to end the wave.",
+
+      "campaign.complete.title": "Campaign Complete",
+      "campaign.complete.text": "Training complete. You're ready for live waves.",
+      "campaign.complete.button": "Start Arcade",
 
       "aria.combatStatus": "Combat status",
       "aria.stats": "Run stats",
@@ -217,7 +266,7 @@
       "ui.how.3": "Синий глушит входящий огонь. Желтый усиливает твой урон.",
       "ui.how.4": "4 в ряд создают линейный удар. 5 в ряд создают тактическую бомбу.",
       "ui.how.5": "Победа - сбросить корпус врага до 0 раньше, чем кончится время (и пока база не рухнула).",
-      "ui.tips.1": "Каскады повышают синхрон. Чем выше синхрон, тем сильнее каждый клир.",
+      "ui.tips.1": "Каскады повышают Синхрон. Чем выше Синхрон, тем сильнее каждый эффект от совпадений.",
       "ui.tips.2": "Держи полосатые камни для паники или для добивания волны.",
       "ui.tips.3": "Когда щиты подняты, можно рискнуть ради большой комбы.",
 
@@ -225,10 +274,55 @@
       "ui.soundOff": "Звук: Выкл",
       "ui.language": "Язык: {lang}",
       "ui.tutorial": "Обучение",
+      "ui.campaign": "Кампания",
       "ui.next": "Дальше",
       "ui.back": "Назад",
       "ui.skip": "Пропустить",
       "ui.done": "Готово",
+
+      "campaign.1.kicker": "Миссия 1/10",
+      "campaign.1.title": "Цель и цикл",
+      "campaign.1.text": "Победа - сбросить Корпус врага до 0. Каждый ход тратит Время и вызывает выстрел врага.",
+
+      "campaign.2.kicker": "Миссия 2/10",
+      "campaign.2.title": "Читай интерфейс",
+      "campaign.2.text": "Числа сверху - статистика забега. Полосы - прочность/щиты базы, корпус врага и остаток времени.",
+
+      "campaign.3.kicker": "Миссия 3/10",
+      "campaign.3.title": "Кнопки",
+      "campaign.3.text": "Новая игра - полный сброс. Перемешать - новый расклад, если застрял. Звук/Язык - удобство.",
+
+      "campaign.4.kicker": "Миссия 4/10",
+      "campaign.4.title": "Собери тройку",
+      "campaign.4.text": "Поменяй местами подсвеченные камни, чтобы собрать 3+. Смотри, как обновится Боевой журнал.",
+
+      "campaign.5.kicker": "Миссия 5/10",
+      "campaign.5.title": "Ответный огонь",
+      "campaign.5.text": "Сделай любой ход. После того как совпавшие камни исчезнут и поле осыпется, враг стреляет. Сначала тратятся щиты.",
+
+      "campaign.6.kicker": "Миссия 6/10",
+      "campaign.6.title": "Подними щиты",
+      "campaign.6.text": "Собери бирюзовые, чтобы поднять щиты. Потом прими выстрел и посмотри, как щиты поглощают урон.",
+
+      "campaign.7.kicker": "Миссия 7/10",
+      "campaign.7.title": "Ремонт",
+      "campaign.7.text": "Собери зелёные, чтобы починить базу. Ремонт восстанавливает прочность.",
+
+      "campaign.8.kicker": "Миссия 8/10",
+      "campaign.8.title": "ЭМИ",
+      "campaign.8.text": "Собери синие, чтобы накопить ЭМИ. ЭМИ снижает следующий выстрел врага.",
+
+      "campaign.9.kicker": "Миссия 9/10",
+      "campaign.9.title": "Особые камни",
+      "campaign.9.text": "4 в ряд создают полосатый удар. 5 в ряд создают бомбу. Они чистят больше и дают пик урона.",
+
+      "campaign.10.kicker": "Миссия 10/10",
+      "campaign.10.title": "Добей врага",
+      "campaign.10.text": "Сбрось Корпус врага до 0. Используй красные совпадения и спец-камни (полосатые/бомбы), чтобы закончить волну.",
+
+      "campaign.complete.title": "Кампания пройдена",
+      "campaign.complete.text": "Обучение завершено. Ты готов к реальным волнам.",
+      "campaign.complete.button": "Играть",
 
       "aria.combatStatus": "Боевой статус",
       "aria.stats": "Статистика",
@@ -337,9 +431,8 @@
       }
     }
 
-    if (tutorial.active) {
-      renderTutorial();
-    }
+    if (campaign.active) renderCampaign();
+    else if (tutorial.active) renderTutorial();
   }
 
   function setLanguage(next) {
@@ -354,6 +447,54 @@
     steps: 5,
     hintSet: new Set(),
   };
+
+  const campaign = {
+    active: false,
+    step: 1,
+    steps: 10,
+    hintSet: new Set(),
+    focusEls: [],
+    lastClear: null,
+    lastEnemy: null,
+    waitingForEnemyHit: false,
+    hintPreparedForStep: 0,
+  };
+
+  function isCampaignDone() {
+    return localStorage.getItem("starJewelsCampaignDone") === "1";
+  }
+
+  function setCampaignDone() {
+    localStorage.setItem("starJewelsCampaignDone", "1");
+  }
+
+  function clearFocus() {
+    for (const el of campaign.focusEls) el.classList.remove("tutorial-focus");
+    campaign.focusEls = [];
+  }
+
+  function setFocus(selectors) {
+    clearFocus();
+    if (!selectors) return;
+    const list = Array.isArray(selectors) ? selectors : [selectors];
+    for (const sel of list) {
+      const el = typeof sel === "string" ? document.querySelector(sel) : null;
+      if (el) {
+        el.classList.add("tutorial-focus");
+        campaign.focusEls.push(el);
+      }
+    }
+  }
+
+  function isGuideActive() {
+    return campaign.active || tutorial.active;
+  }
+
+  function activeHintSet() {
+    if (campaign.active) return campaign.hintSet;
+    if (tutorial.active) return tutorial.hintSet;
+    return null;
+  }
 
   function showTutorialOverlay() {
     if (!tutorialOverlay) return;
@@ -396,6 +537,60 @@
     return null;
   }
 
+  function swapMakesMatchForColor(board, r1, c1, r2, c2, targetColor) {
+    const a = board[r1][c1];
+    const b = board[r2][c2];
+    if (!a || !b) return false;
+    board[r1][c1] = b;
+    board[r2][c2] = a;
+    const groups = findMatches(board);
+    board[r1][c1] = a;
+    board[r2][c2] = b;
+    return groups.some((g) => g.color === targetColor && g.length >= 3);
+  }
+
+  function findHintMoveForColor(targetColor) {
+    if (!Array.isArray(game.board) || game.board.length !== SIZE) return null;
+    for (let r = 0; r < SIZE; r += 1) {
+      for (let c = 0; c < SIZE; c += 1) {
+        if (c + 1 < SIZE && swapMakesMatchForColor(game.board, r, c, r, c + 1, targetColor)) {
+          return {
+            a: { r, c },
+            b: { r, c: c + 1 },
+          };
+        }
+        if (r + 1 < SIZE && swapMakesMatchForColor(game.board, r, c, r + 1, c, targetColor)) {
+          return {
+            a: { r, c },
+            b: { r: r + 1, c },
+          };
+        }
+      }
+    }
+    return null;
+  }
+
+  function ensureHintMoveForColor(targetColor) {
+    if (!campaign.active) return;
+    if (campaign.hintPreparedForStep === campaign.step) return;
+
+    // Try a few rerolls to guarantee the guided step is doable.
+    let hint = findHintMoveForColor(targetColor);
+    let attempts = 0;
+    while (!hint && attempts < 24) {
+      game.board = generateBoard();
+      hint = findHintMoveForColor(targetColor);
+      attempts += 1;
+    }
+
+    // If we had to change the board, make it obvious.
+    if (attempts > 0) {
+      updateBoardUI({ spawnSet: allPositionsSet() });
+    }
+
+    campaign.hintPreparedForStep = campaign.step;
+  }
+
   function setTutorialHintForStep() {
     tutorial.hintSet.clear();
     if (tutorial.step !== 2) return;
@@ -403,6 +598,209 @@
     if (!hint) return;
     tutorial.hintSet.add(keyOf(hint.a.r, hint.a.c));
     tutorial.hintSet.add(keyOf(hint.b.r, hint.b.c));
+  }
+
+  function setCampaignHintForStep() {
+    campaign.hintSet.clear();
+    if (!campaign.active) return;
+    const step = campaign.step;
+
+    // Step -> preferred color hints.
+    const wantColor = step === 6 ? 1 : step === 7 ? 4 : step === 8 ? 3 : step === 10 ? 0 : null;
+
+    if (wantColor != null && [6, 7, 8].includes(step)) {
+      ensureHintMoveForColor(wantColor);
+    }
+
+    const hint =
+      wantColor == null ? findHintMove() : findHintMoveForColor(wantColor) || findHintMove();
+    if (!hint) return;
+    campaign.hintSet.add(keyOf(hint.a.r, hint.a.c));
+    campaign.hintSet.add(keyOf(hint.b.r, hint.b.c));
+  }
+
+  function showGuideOverlay() {
+    if (!tutorialOverlay) return;
+    tutorialOverlay.classList.remove("hidden");
+  }
+
+  function hideGuideOverlay() {
+    if (!tutorialOverlay) return;
+    tutorialOverlay.classList.add("hidden");
+  }
+
+  function setGuideFloating(isFloating) {
+    if (!tutorialOverlay) return;
+    tutorialOverlay.classList.toggle("floating", Boolean(isFloating));
+  }
+
+  function renderCampaign() {
+    if (!campaign.active) return;
+
+    showGuideOverlay();
+
+    const isAction = [4, 5, 6, 7, 8, 10].includes(campaign.step);
+    setGuideFloating(isAction);
+
+    if (tutorialKicker) tutorialKicker.textContent = t(`campaign.${campaign.step}.kicker`);
+    if (tutorialTitle) tutorialTitle.textContent = t(`campaign.${campaign.step}.title`);
+    if (tutorialText) tutorialText.textContent = t(`campaign.${campaign.step}.text`);
+
+    if (tutorialBack) tutorialBack.disabled = campaign.step <= 1;
+    if (tutorialNext) tutorialNext.textContent = t(campaign.step >= campaign.steps ? "ui.done" : "ui.next");
+
+    if (tutorialNext) {
+      tutorialNext.disabled = !canAdvanceCampaignStep() && [4, 5, 6, 7, 8, 10].includes(campaign.step);
+    }
+
+    // Focus per step.
+    if (campaign.step === 1) {
+      setFocus([".status-bars", ".hud"]);
+    } else if (campaign.step === 2) {
+      setFocus([".stats", ".status-bars", ".hud"]);
+    } else if (campaign.step === 3) {
+      setFocus([".controls"]);
+    } else if (campaign.step === 4) {
+      setFocus(["#board"]);
+    } else if (campaign.step === 5) {
+      setFocus([".status-bars", ".hud"]);
+    } else if (campaign.step === 6) {
+      setFocus([".status-bars", "#baseFill"]);
+    } else if (campaign.step === 7) {
+      setFocus(["#baseFill", "#baseReadout"]);
+    } else if (campaign.step === 8) {
+      setFocus(["#enemySub", "#enemyFill"]);
+    } else if (campaign.step === 9) {
+      setFocus([".card", "#board"]);
+    } else if (campaign.step === 10) {
+      setFocus(["#enemyFill", "#board"]);
+    }
+
+    setCampaignHintForStep();
+    updateBoardUI();
+  }
+
+  function startCampaign() {
+    campaign.active = true;
+    campaign.step = 1;
+    campaign.lastClear = null;
+    campaign.lastEnemy = null;
+    campaign.waitingForEnemyHit = false;
+    game.mode = "campaign";
+
+    newGame();
+
+    // Make the tutorial enemy actually shoot so the counterfire step is visible.
+    game.enemyAttack = Math.max(game.enemyAttack, 5);
+    updateStats();
+
+    renderCampaign();
+  }
+
+  function stopCampaign({ completed } = {}) {
+    campaign.active = false;
+    campaign.hintSet.clear();
+    campaign.lastClear = null;
+    campaign.lastEnemy = null;
+    campaign.waitingForEnemyHit = false;
+    clearFocus();
+    setGuideFloating(false);
+    hideGuideOverlay();
+    updateBoardUI();
+
+    if (completed) setCampaignDone();
+
+    game.mode = "arcade";
+    newGame();
+  }
+
+  function canAdvanceCampaignStep() {
+    if (!campaign.active) return true;
+
+    if (campaign.step === 4) {
+      return Boolean(campaign.lastClear && campaign.lastClear.total >= 3);
+    }
+    if (campaign.step === 5) {
+      return Boolean(
+        campaign.lastEnemy &&
+          (campaign.lastEnemy.damage > 0 || campaign.lastEnemy.absorbed > 0 || campaign.lastEnemy.mitigated > 0)
+      );
+    }
+    if (campaign.step === 6) {
+      return Boolean(campaign.lastClear && campaign.lastClear.shieldGain > 0);
+    }
+    if (campaign.step === 7) {
+      return Boolean(campaign.lastClear && campaign.lastClear.repair > 0);
+    }
+    if (campaign.step === 8) {
+      return Boolean(campaign.lastClear && campaign.lastClear.empAdded > 0);
+    }
+    if (campaign.step === 10) {
+      return game.enemyHp <= 0;
+    }
+
+    return true;
+  }
+
+  function campaignNextStep() {
+    if (!campaign.active) return;
+    if (!canAdvanceCampaignStep()) return;
+
+    if (campaign.step >= campaign.steps) {
+      stopCampaign({ completed: true });
+      return;
+    }
+
+    campaign.step += 1;
+    campaign.lastClear = null;
+    campaign.lastEnemy = null;
+
+    if (campaign.step === 7) {
+      // Ensure repair has a visible effect.
+      game.baseHp = Math.min(game.baseHp, 60);
+      updateStats();
+    }
+
+    if (campaign.step === 10) {
+      // Make the finale quick.
+      game.enemyHp = Math.min(game.enemyHp, 60);
+      updateStats();
+    }
+
+    if (campaign.step === 9) {
+      // Demo pulse.
+      const center = fxLocalCenterOfBoard();
+      if (center) {
+        fxRing(center.x, center.y, "teal");
+        fxSpray(center.x, center.y, 46);
+      }
+      fxFlash("teal");
+    }
+
+    renderCampaign();
+  }
+
+  function campaignMaybeAutoAdvance() {
+    if (!campaign.active) return;
+    const autoSteps = new Set([4, 5, 6, 7, 8]);
+    if (!autoSteps.has(campaign.step)) return;
+    if (!canAdvanceCampaignStep()) return;
+
+    // Small delay so the player can see what happened.
+    setTimeout(() => {
+      if (!campaign.active) return;
+      if (autoSteps.has(campaign.step) && canAdvanceCampaignStep()) {
+        campaignNextStep();
+      }
+    }, 450);
+  }
+
+  function campaignPrevStep() {
+    if (!campaign.active) return;
+    campaign.step = Math.max(1, campaign.step - 1);
+    campaign.lastClear = null;
+    campaign.lastEnemy = null;
+    renderCampaign();
   }
 
   function renderTutorial() {
@@ -465,6 +863,215 @@
     el.classList.add(className);
   }
 
+  function shakeFrame() {
+    if (!boardFrame) return;
+    boardFrame.classList.remove("shake");
+    void boardFrame.offsetWidth;
+    boardFrame.classList.add("shake");
+  }
+
+  function fxLocalPointFromClient(x, y) {
+    if (!fxLayer) return null;
+    const base = fxLayer.getBoundingClientRect();
+    return { x: x - base.left, y: y - base.top };
+  }
+
+  function fxLocalCenterFromCell(r, c) {
+    if (!fxLayer) return null;
+    const cellEl = cellEls[r] ? cellEls[r][c] : null;
+    if (!cellEl) return null;
+    const rect = cellEl.getBoundingClientRect();
+    return fxLocalPointFromClient(rect.left + rect.width / 2, rect.top + rect.height / 2);
+  }
+
+  function fxAdd(el) {
+    if (!fxLayer) return;
+    fxLayer.appendChild(el);
+
+    const cleanup = () => {
+      el.removeEventListener("animationend", cleanup);
+      if (el.parentNode) el.parentNode.removeChild(el);
+    };
+
+    // Always have a TTL so FX don't stick if animations are disabled.
+    const ttl = el.classList.contains("fx-float") ? 900 : el.classList.contains("fx-beam") ? 350 : 650;
+    setTimeout(cleanup, ttl);
+
+    el.addEventListener("animationend", cleanup);
+  }
+
+  function fxFloatText(x, y, text, kind) {
+    if (!fxLayer) return;
+    const el = document.createElement("div");
+    el.className = `fx-float ${kind || ""}`.trim();
+    el.textContent = text;
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    fxAdd(el);
+  }
+
+  function fxSpark(x, y) {
+    if (!fxLayer) return;
+    const el = document.createElement("div");
+    el.className = "fx-spark";
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    fxAdd(el);
+  }
+
+  function fxStreak(x, y, dx, dy, rotDeg, kind) {
+    if (!fxLayer) return;
+    const el = document.createElement("div");
+    el.className = `fx-streak ${kind || ""}`.trim();
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    el.style.setProperty("--dx", String(Math.round(dx)));
+    el.style.setProperty("--dy", String(Math.round(dy)));
+    el.style.setProperty("--rot", `${Math.round(rotDeg)}deg`);
+    el.style.setProperty("--len", String(28 + Math.floor(Math.random() * 28)));
+    el.style.setProperty("--thick", String(3 + Math.floor(Math.random() * 3)));
+    fxAdd(el);
+  }
+
+  function fxBigBurst(x, y) {
+    if (!fxLayer) return;
+    const el = document.createElement("div");
+    el.className = "fx-burst big";
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    fxAdd(el);
+  }
+
+  function fxBurst(x, y) {
+    if (!fxLayer) return;
+    const el = document.createElement("div");
+    el.className = "fx-burst";
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    fxAdd(el);
+  }
+
+  function fxRing(x, y, kind) {
+    if (!fxLayer) return;
+    const el = document.createElement("div");
+    el.className = `fx-ring ${kind || ""}`.trim();
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    fxAdd(el);
+  }
+
+  function fxTracer(fromX, fromY, toX, toY, kind) {
+    if (!fxLayer) return;
+    const dx = toX - fromX;
+    const dy = toY - fromY;
+    const len = Math.max(12, Math.hypot(dx, dy));
+    const rot = Math.atan2(dy, dx) * (180 / Math.PI);
+
+    const el = document.createElement("div");
+    el.className = `fx-tracer ${kind || ""}`.trim();
+    el.style.left = `${fromX}px`;
+    el.style.top = `${fromY}px`;
+    el.style.width = `${len}px`;
+    el.style.transform = `rotate(${rot}deg)`;
+    fxAdd(el);
+  }
+
+  function fxShards(x, y, count, kind) {
+    const n = Math.max(0, Math.min(26, count || 0));
+    for (let i = 0; i < n; i += 1) {
+      const el = document.createElement("div");
+      el.className = `fx-shard ${kind || ""}`.trim();
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+      el.style.setProperty("--rot", `${(Math.random() * 360) | 0}deg`);
+      el.style.setProperty("--dx", String(Math.round((Math.random() - 0.5) * 220)));
+      el.style.setProperty("--dy", String(Math.round((Math.random() - 0.5) * 160)));
+      fxAdd(el);
+    }
+  }
+
+  function fxLocalPointFromRectAnchor(rect, ax, ay) {
+    if (!fxLayer) return null;
+    const base = fxLayer.getBoundingClientRect();
+    return { x: rect.left - base.left + rect.width * ax, y: rect.top - base.top + rect.height * ay };
+  }
+
+  function fxLocalCenterOfBoard() {
+    if (!boardEl || !fxLayer) return null;
+    const rect = boardEl.getBoundingClientRect();
+    return fxLocalPointFromRectAnchor(rect, 0.5, 0.5);
+  }
+
+  function fxFlash(kind) {
+    if (!fxLayer) return;
+    const el = document.createElement("div");
+    el.className = `fx-flash ${kind || ""}`.trim();
+    fxAdd(el);
+  }
+
+  function fxSpray(x, y, count) {
+    const n = Math.max(0, Math.min(90, count || 0));
+    for (let i = 0; i < n; i += 1) {
+      // Bias towards shorter travel so it reads as a punchy burst.
+      const t = Math.random();
+      const spread = 24 + t * t * 140;
+      const dx = (Math.random() - 0.5) * spread;
+      const dy = (Math.random() - 0.5) * (spread * 0.75);
+
+      fxSpark(x + dx, y + dy);
+
+      if (i % 2 === 0) {
+        const rot = Math.atan2(dy, dx) * (180 / Math.PI);
+        const kind = Math.random() < 0.5 ? "teal" : "red";
+        fxStreak(x, y, dx * 1.1, dy * 1.1, rot, kind);
+      }
+      if (i % 4 === 0) {
+        const rot = (Math.random() * 360) | 0;
+        fxStreak(x, y, dx * 0.7, dy * 0.7, rot, Math.random() < 0.5 ? "red" : "");
+      }
+    }
+  }
+
+  function fxBeamRow(r) {
+    if (!fxLayer || !cellEls[r] || !cellEls[r][0] || !cellEls[r][SIZE - 1]) return;
+    const a = cellEls[r][0].getBoundingClientRect();
+    const b = cellEls[r][SIZE - 1].getBoundingClientRect();
+    const base = fxLayer.getBoundingClientRect();
+
+    const left = a.left - base.left;
+    const top = a.top - base.top;
+    const width = b.right - a.left;
+    const height = a.height;
+
+    const el = document.createElement("div");
+    el.className = "fx-beam h";
+    el.style.left = `${left}px`;
+    el.style.top = `${top + height * 0.28}px`;
+    el.style.width = `${width}px`;
+    el.style.height = `${Math.max(6, height * 0.44)}px`;
+    fxAdd(el);
+  }
+
+  function fxBeamCol(c) {
+    if (!fxLayer || !cellEls[0] || !cellEls[0][c] || !cellEls[SIZE - 1] || !cellEls[SIZE - 1][c]) return;
+    const a = cellEls[0][c].getBoundingClientRect();
+    const b = cellEls[SIZE - 1][c].getBoundingClientRect();
+    const base = fxLayer.getBoundingClientRect();
+
+    const left = a.left - base.left;
+    const top = a.top - base.top;
+    const height = b.bottom - a.top;
+    const width = a.width;
+
+    const el = document.createElement("div");
+    el.className = "fx-beam v";
+    el.style.left = `${left + width * 0.28}px`;
+    el.style.top = `${top}px`;
+    el.style.width = `${Math.max(6, width * 0.44)}px`;
+    el.style.height = `${height}px`;
+    fxAdd(el);
+  }
+
   const game = {
     board: [],
     selected: null,
@@ -487,6 +1094,10 @@
 
     emp: 0,
     nukeCharge: 0,
+
+    allowedColors: [0, 1, 2, 3, 4, 5],
+
+    mode: "arcade",
   };
 
   const keyOf = (r, c) => `${r},${c}`;
@@ -542,11 +1153,19 @@
         startTutorial();
       });
     }
-    if (tutorialBack) tutorialBack.addEventListener("click", () => tutorialPrevStep());
-    if (tutorialNext) tutorialNext.addEventListener("click", () => tutorialNextStep());
+    if (campaignBtn) {
+      campaignBtn.addEventListener("click", () => {
+        startCampaign();
+      });
+    }
+    if (tutorialBack)
+      tutorialBack.addEventListener("click", () => (campaign.active ? campaignPrevStep() : tutorialPrevStep()));
+    if (tutorialNext)
+      tutorialNext.addEventListener("click", () => (campaign.active ? campaignNextStep() : tutorialNextStep()));
     if (tutorialSkip) {
       tutorialSkip.addEventListener("click", () => {
-        hideTutorialOverlay({ completed: true });
+        if (campaign.active) stopCampaign({ completed: true });
+        else hideTutorialOverlay({ completed: true });
       });
     }
     overlayButton.addEventListener("click", () => {
@@ -655,7 +1274,7 @@
     game.nukeCharge = 0;
     initLevel();
 
-    if (!isTutorialDone()) {
+    if (game.mode !== "campaign" && !isTutorialDone()) {
       startTutorial();
     }
   }
@@ -678,6 +1297,7 @@
     game.enemyAttack = config.enemyAttack;
     game.timeMax = config.time;
     game.moves = config.time;
+    game.allowedColors = getAllowedColors(game.level);
     game.board = generateBoard();
     updateStats();
     updateBoardUI({ spawnSet: allPositionsSet() });
@@ -685,10 +1305,30 @@
     logCombat(t("toast.wave", { wave: game.level }));
   }
 
+  function getAllowedColors(wave) {
+    if (game.mode === "campaign") return [0, 1, 2, 3, 4, 5];
+    if (wave <= 1) return [0, 4, 1];
+    if (wave === 2) return [0, 4, 1, 3];
+    if (wave === 3) return [0, 4, 1, 3, 2];
+    return [0, 1, 2, 3, 4, 5];
+  }
+
+  function randomAllowedColor() {
+    const list = Array.isArray(game.allowedColors) && game.allowedColors.length ? game.allowedColors : [0, 1, 2, 3, 4, 5];
+    return list[randomInt(list.length)];
+  }
+
   function getWaveConfig(wave) {
-    const enemyHp = 140 + (wave - 1) * 70;
-    const enemyAttack = 6 + Math.floor(wave / 2);
-    const time = 18 + Math.floor(wave / 3);
+    if (game.mode === "campaign") {
+      return { enemyHp: 160, enemyAttack: 6, time: 30 };
+    }
+    if (wave <= 1) return { enemyHp: 90, enemyAttack: 0, time: 28 };
+    if (wave === 2) return { enemyHp: 120, enemyAttack: 4, time: 24 };
+    if (wave === 3) return { enemyHp: 160, enemyAttack: 6, time: 22 };
+
+    const enemyHp = 180 + (wave - 4) * 85;
+    const enemyAttack = 7 + Math.floor((wave - 3) / 2);
+    const time = 20 + Math.floor((wave - 1) / 4);
     return { enemyHp, enemyAttack, time };
   }
 
@@ -710,7 +1350,9 @@
     for (let r = 0; r < SIZE; r += 1) {
       for (let c = 0; c < SIZE; c += 1) {
         const options = [];
-        for (let color = 0; color < COLORS; color += 1) {
+        const allowed =
+          Array.isArray(game.allowedColors) && game.allowedColors.length ? game.allowedColors : [0, 1, 2, 3, 4, 5];
+        for (const color of allowed) {
           if (
             c >= 2 &&
             board[r][c - 1] &&
@@ -731,8 +1373,7 @@
           }
           options.push(color);
         }
-        const color =
-          options.length > 0 ? options[randomInt(options.length)] : randomInt(COLORS);
+        const color = options.length > 0 ? options[randomInt(options.length)] : randomAllowedColor();
         board[r][c] = { color, special: null };
       }
     }
@@ -810,7 +1451,8 @@
         const key = keyOf(r, c);
         if (clearingSet && clearingSet.has(key)) el.classList.add("clearing");
         if (spawnSet && spawnSet.has(key)) el.classList.add("spawn");
-        if (tutorial.active && tutorial.hintSet && tutorial.hintSet.has(key)) el.classList.add("tutorial-hint");
+        const hints = activeHintSet();
+        if (hints && hints.has(key)) el.classList.add("tutorial-hint");
         if (
           swapPair &&
           (samePos(swapPair[0], { r, c }) || samePos(swapPair[1], { r, c }))
@@ -851,6 +1493,10 @@
 
     swapBoard(a, b);
     updateBoardUI({ swapPair: [a, b] });
+    const p1 = fxLocalCenterFromCell(a.r, a.c);
+    const p2 = fxLocalCenterFromCell(b.r, b.c);
+    if (p1) fxSpray(p1.x, p1.y, 14);
+    if (p2) fxSpray(p2.x, p2.y, 14);
     playSound("swap");
     await delay(160);
 
@@ -1014,6 +1660,27 @@
         logCombat(t("log.youDamage", { amount: damage }));
       }
       pulse(enemyBarEl, "pulse");
+      if (damage >= 18) fxFlash("red");
+
+      const center = fxLocalCenterOfBoard();
+      const enemyRect = enemyFill ? enemyFill.getBoundingClientRect() : null;
+      if (center && enemyRect) {
+        const dst = fxLocalPointFromRectAnchor(enemyRect, 0.75, 0.5);
+        if (dst) fxTracer(center.x, center.y, dst.x, dst.y, "red");
+      }
+
+      const near = enemyFill ? enemyFill.getBoundingClientRect() : null;
+      const base = fxLayer ? fxLayer.getBoundingClientRect() : null;
+      if (near && base) {
+        const x = near.left - base.left + near.width * 0.85;
+        const y = near.top - base.top + 14;
+        fxFloatText(x, y, `-${damage}`, "damage");
+        if (damage >= 8) fxSpray(x, y + 18, 18);
+        if (damage >= 14) {
+          fxRing(x, y + 14, "red");
+          fxShards(x, y + 12, 10, "red");
+        }
+      }
     }
 
     const repair = Math.floor(green * 2 * combo);
@@ -1023,6 +1690,27 @@
         logCombat(t("log.youRepair", { amount: repair }));
       }
       pulse(baseBarEl, "pulse");
+      if (repair >= 14) fxFlash("teal");
+
+      const center = fxLocalCenterOfBoard();
+      const baseRect = baseFill ? baseFill.getBoundingClientRect() : null;
+      if (center && baseRect) {
+        const dst = fxLocalPointFromRectAnchor(baseRect, 0.25, 0.5);
+        if (dst) fxTracer(center.x, center.y, dst.x, dst.y, "green");
+      }
+
+      const near = baseFill ? baseFill.getBoundingClientRect() : null;
+      const base = fxLayer ? fxLayer.getBoundingClientRect() : null;
+      if (near && base) {
+        const x = near.left - base.left + near.width * 0.15;
+        const y = near.top - base.top + 14;
+        fxFloatText(x, y, `+${repair}`, "repair");
+        if (repair >= 6) fxSpray(x, y + 18, 14);
+        if (repair >= 10) {
+          fxRing(x, y + 14, "green");
+          fxShards(x, y + 12, 8, "green");
+        }
+      }
     }
 
     const shieldGain = Math.floor(teal * 2 * combo);
@@ -1032,10 +1720,52 @@
         logCombat(t("log.youShield", { amount: shieldGain }));
       }
       pulse(baseBarEl, "pulse");
+
+      const center = fxLocalCenterOfBoard();
+      const baseRect = baseFill ? baseFill.getBoundingClientRect() : null;
+      if (center && baseRect) {
+        const dst = fxLocalPointFromRectAnchor(baseRect, 0.5, 0.5);
+        if (dst) fxTracer(center.x, center.y, dst.x, dst.y, "teal");
+      }
+
+      const near = baseFill ? baseFill.getBoundingClientRect() : null;
+      const base = fxLayer ? fxLayer.getBoundingClientRect() : null;
+      if (near && base) {
+        const x = near.left - base.left + near.width * 0.55;
+        const y = near.top - base.top + 14;
+        fxFloatText(x, y, `+${shieldGain}`, "shield");
+        if (shieldGain >= 6) fxSpray(x, y + 18, 14);
+        if (shieldGain >= 10) {
+          fxRing(x, y + 14, "teal");
+          fxShards(x, y + 12, 8, "teal");
+        }
+      }
     }
 
-    if (blue > 0) {
-      game.emp += blue;
+    const empAdded = blue;
+    if (empAdded > 0) {
+      game.emp += empAdded;
+
+      const near = enemyFill ? enemyFill.getBoundingClientRect() : null;
+      const base = fxLayer ? fxLayer.getBoundingClientRect() : null;
+      if (near && base && empAdded >= 3) {
+        fxFloatText(
+          near.left - base.left + near.width * 0.15,
+          near.top - base.top + 10,
+          `EMP +${empAdded}`,
+          "emp"
+        );
+      }
+
+      const center = fxLocalCenterOfBoard();
+      const enemyRect = enemyFill ? enemyFill.getBoundingClientRect() : null;
+      if (center && enemyRect && empAdded >= 2) {
+        const dst = fxLocalPointFromRectAnchor(enemyRect, 0.35, 0.5);
+        if (dst) {
+          fxTracer(center.x, center.y, dst.x, dst.y, "blue");
+          fxRing(dst.x, dst.y, "");
+        }
+      }
     }
 
     if (pink > 0) {
@@ -1056,7 +1786,20 @@
       showToast(message);
       logCombat(message);
       pulse(enemyBarEl, "hit");
+
+      const center = fxLocalCenterFromCell(Math.floor(SIZE / 2), Math.floor(SIZE / 2));
+      if (center) {
+        fxBigBurst(center.x, center.y);
+        fxBurst(center.x, center.y);
+        fxSpray(center.x, center.y, 34);
+        fxRing(center.x, center.y, "red");
+        fxShards(center.x, center.y, 18, "red");
+      }
+      shakeFrame();
+      fxFlash("red");
     }
+
+    return { damage, repair, shieldGain, empAdded, nukesFired };
   }
 
   function enemyTurn() {
@@ -1083,7 +1826,45 @@
     const expanded = expandClearSet(new Set(clearSet), protectedSet);
     if (!expanded.size) return;
 
-    applyCombatFromClear(expanded);
+    const combat = applyCombatFromClear(expanded);
+
+    if (campaign.active) {
+      campaign.lastClear = {
+        total: expanded.size,
+        damage: combat.damage,
+        repair: combat.repair,
+        shieldGain: combat.shieldGain,
+        empAdded: combat.empAdded,
+        nukesFired: combat.nukesFired,
+      };
+      renderCampaign();
+      campaignMaybeAutoAdvance();
+    }
+
+    // A few lightweight sparks so clears feel punchy.
+    if (expanded.size) {
+      let shown = 0;
+      for (const key of expanded) {
+        if (shown >= 12) break;
+        const [r, c] = key.split(",").map(Number);
+        if ((r + c) % 2 !== 0) continue;
+        const at = fxLocalCenterFromCell(r, c);
+        if (at) {
+          fxSpark(at.x + (shown % 2 === 0 ? -10 : 10), at.y + (shown % 3 === 0 ? -8 : 8));
+          shown += 1;
+        }
+      }
+
+      if (expanded.size >= 6) fxFlash("teal");
+
+      if (expanded.size >= 10) {
+        const center = fxLocalCenterOfBoard();
+        if (center) {
+          fxRing(center.x, center.y, "teal");
+          fxShards(center.x, center.y, 16, "teal");
+        }
+      }
+    }
 
     const clearCount = expanded.size;
     game.score += Math.floor(clearCount * SCORE_PER * game.combo);
@@ -1121,14 +1902,35 @@
       processed.add(key);
 
       if (cell.special === "stripe-h") {
+        fxBeamRow(r);
+        const at = fxLocalCenterFromCell(r, c);
+        if (at) {
+          fxSpray(at.x, at.y, 28);
+          fxRing(at.x, at.y, "");
+        }
         for (let col = 0; col < SIZE; col += 1) {
           addToClear(clearSet, protectedSet, queue, r, col);
         }
       } else if (cell.special === "stripe-v") {
+        fxBeamCol(c);
+        const at = fxLocalCenterFromCell(r, c);
+        if (at) {
+          fxSpray(at.x, at.y, 28);
+          fxRing(at.x, at.y, "");
+        }
         for (let row = 0; row < SIZE; row += 1) {
           addToClear(clearSet, protectedSet, queue, row, c);
         }
       } else if (cell.special === "color") {
+        const at = fxLocalCenterFromCell(r, c);
+        if (at) {
+          fxBigBurst(at.x, at.y);
+          fxBurst(at.x, at.y);
+          fxSpray(at.x, at.y, 38);
+          fxFlash("red");
+          fxRing(at.x, at.y, "red");
+          fxShards(at.x, at.y, 22, "red");
+        }
         const color = pickDominantColor();
         for (let row = 0; row < SIZE; row += 1) {
           for (let col = 0; col < SIZE; col += 1) {
@@ -1167,7 +1969,7 @@
         }
       }
       for (let r = writeRow; r >= 0; r -= 1) {
-        game.board[r][c] = { color: randomInt(COLORS), special: null };
+        game.board[r][c] = { color: randomAllowedColor(), special: null };
         spawnSet.add(keyOf(r, c));
       }
     }
@@ -1306,15 +2108,29 @@
         }
       }
     }
-    let bestColor = 0;
-    for (let i = 1; i < counts.length; i += 1) {
-      if (counts[i] > counts[bestColor]) bestColor = i;
+    const allowed =
+      Array.isArray(game.allowedColors) && game.allowedColors.length ? game.allowedColors : [0, 1, 2, 3, 4, 5];
+    let bestColor = allowed[0];
+    for (let i = 1; i < allowed.length; i += 1) {
+      const color = allowed[i];
+      if (counts[color] > counts[bestColor]) bestColor = color;
     }
     return bestColor;
   }
 
   async function postMoveCheck() {
     if (game.enemyHp <= 0) {
+      if (campaign.active) {
+        showOverlay(
+          t("campaign.complete.title"),
+          t("campaign.complete.text"),
+          t("campaign.complete.button"),
+          () => {
+            stopCampaign({ completed: true });
+          }
+        );
+        return;
+      }
       showOverlay(
         t("overlay.waveCleared.title"),
         t("overlay.waveCleared.text", { nextWave: game.level + 1 }),
@@ -1334,11 +2150,21 @@
     }
 
     const report = enemyTurn();
+    if (campaign.active) {
+      campaign.lastEnemy = report;
+    }
     updateStats();
+
+    if (campaign.active) {
+      renderCampaign();
+      campaignMaybeAutoAdvance();
+    }
 
     if (report) {
       if (report.incoming <= 0) {
-        logCombat(t("log.enemyNoDamage"));
+        if (game.enemyAttack > 0 || report.mitigated > 0) {
+          logCombat(t("log.enemyNoDamage"));
+        }
       } else {
         if (report.absorbed > 0) {
           logCombat(t("log.enemyShield", { amount: report.absorbed }));
@@ -1347,6 +2173,28 @@
         if (report.damage > 0) {
           logCombat(t("log.enemyHit", { amount: report.damage }));
           pulse(baseBarEl, "hit");
+          shakeFrame();
+
+          fxFlash("red");
+
+          const near = baseFill ? baseFill.getBoundingClientRect() : null;
+          const base = fxLayer ? fxLayer.getBoundingClientRect() : null;
+          if (near && base) {
+            const x = near.left - base.left + near.width * 0.85;
+            const y = near.top - base.top + 14;
+            fxFloatText(x, y, `-${report.damage}`, "damage");
+            fxSpray(x, y + 18, 26);
+            fxRing(x, y + 14, "red");
+            fxShards(x, y + 12, 14, "red");
+          }
+
+          const baseRect = baseFill ? baseFill.getBoundingClientRect() : null;
+          const enemyRect = enemyFill ? enemyFill.getBoundingClientRect() : null;
+          if (baseRect && enemyRect) {
+            const from = fxLocalPointFromRectAnchor(enemyRect, 0.5, 0.55);
+            const to = fxLocalPointFromRectAnchor(baseRect, 0.5, 0.55);
+            if (from && to) fxTracer(from.x, from.y, to.x, to.y, "red");
+          }
         }
       }
     }

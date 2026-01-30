@@ -63,7 +63,7 @@ body::before {
   justify-content: space-between;
   gap: 20px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
 }
 
 .brand {
@@ -274,6 +274,28 @@ body::before {
   overflow: hidden;
 }
 
+.board-frame.shake {
+  animation: shake 0.28s ease;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-4px, 2px);
+  }
+  45% {
+    transform: translate(4px, -2px);
+  }
+  70% {
+    transform: translate(-3px, -4px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
 .board-frame::after {
   content: "";
   position: absolute;
@@ -282,7 +304,7 @@ body::before {
   background: radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.08), transparent 40%),
     radial-gradient(circle at 70% 40%, rgba(239, 68, 68, 0.08), transparent 42%),
     conic-gradient(from 180deg, rgba(45, 212, 191, 0.04), rgba(255, 159, 28, 0.04), rgba(45, 212, 191, 0.04));
-  filter: blur(14px);
+  filter: none;
   opacity: 0.7;
   transform: rotate(0deg);
   animation: drift 10s linear infinite;
@@ -353,7 +375,7 @@ body::before {
   padding: 10px 12px;
   font-size: 0.92rem;
   line-height: 1.2;
-  backdrop-filter: blur(6px);
+  backdrop-filter: none;
   box-shadow: 0 10px 18px rgba(0, 0, 0, 0.25);
   animation: feedIn 0.18s ease;
 }
@@ -382,6 +404,389 @@ body::before {
   background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.06), transparent 55%),
     linear-gradient(160deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.25));
   border-radius: 18px;
+}
+
+.fx-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.fx-float {
+  position: absolute;
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: 0.2px;
+  text-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.65),
+    0 0 22px rgba(255, 255, 255, 0.22);
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  animation: floatUp 0.85s ease forwards;
+}
+
+.fx-float.damage {
+  color: #fff1f2;
+}
+
+.fx-float.repair {
+  color: #dcfce7;
+}
+
+.fx-float.shield {
+  color: #ccfbf1;
+}
+
+.fx-float.emp {
+  color: #e0f2fe;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translate(-50%, -20%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -210%);
+    opacity: 0;
+  }
+}
+
+.fx-spark {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.22) 45%, transparent 72%),
+    radial-gradient(circle at 55% 55%, rgba(56, 189, 248, 1), transparent 62%);
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.45), 0 0 30px rgba(255, 255, 255, 0.18);
+  animation: spark 0.75s ease forwards;
+}
+
+@keyframes spark {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.5);
+  }
+}
+
+.fx-streak {
+  position: absolute;
+  width: calc(var(--len, 34) * 1px);
+  height: calc(var(--thick, 4) * 1px);
+  border-radius: 999px;
+  transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+  transform-origin: center;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95), rgba(56, 189, 248, 0.35));
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.35));
+  animation: streak 0.72s ease forwards;
+}
+
+.fx-streak.red {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95), rgba(239, 68, 68, 0.45));
+  filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.32));
+}
+
+.fx-streak.teal {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95), rgba(45, 212, 191, 0.45));
+  filter: drop-shadow(0 0 12px rgba(45, 212, 191, 0.28));
+}
+
+@keyframes streak {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0.7);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + (var(--dx, 0) * 1px)), calc(-50% + (var(--dy, 0) * 1px)))
+      rotate(var(--rot, 0deg))
+      scale(1);
+  }
+}
+
+.fx-beam {
+  position: absolute;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+  mix-blend-mode: screen;
+  opacity: 1;
+  animation: beam 0.45s ease forwards;
+}
+
+.fx-beam.h {
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0), rgba(56, 189, 248, 0.9), rgba(56, 189, 248, 0));
+}
+
+.fx-beam.v {
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0), rgba(56, 189, 248, 0.9), rgba(56, 189, 248, 0));
+}
+
+@keyframes beam {
+  0% {
+    opacity: 0;
+    filter: none;
+  }
+  30% {
+    opacity: 1;
+    filter: none;
+  }
+  100% {
+    opacity: 0;
+    filter: none;
+  }
+}
+
+.fx-burst {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 0 0 10px rgba(239, 68, 68, 0.25),
+    0 0 46px rgba(239, 68, 68, 0.22);
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%) scale(0.2);
+  opacity: 1;
+  animation: burst 0.6s ease forwards;
+}
+
+.fx-burst.big {
+  width: 92px;
+  height: 92px;
+  box-shadow:
+    0 0 0 14px rgba(239, 68, 68, 0.22),
+    0 0 72px rgba(239, 68, 68, 0.25);
+}
+
+@keyframes burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.8);
+  }
+}
+
+.fx-flash {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(circle at 70% 30%, rgba(56, 189, 248, 0.35), transparent 55%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: flash 0.28s ease forwards;
+}
+
+.fx-tracer {
+  position: absolute;
+  height: 3px;
+  border-radius: 999px;
+  transform-origin: 0 50%;
+  mix-blend-mode: screen;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.95),
+    rgba(56, 189, 248, 0.65),
+    rgba(255, 255, 255, 0)
+  );
+  box-shadow: 0 0 22px rgba(56, 189, 248, 0.28);
+  opacity: 0;
+  animation: tracer 0.45s ease forwards;
+}
+
+.fx-tracer.red {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.95),
+    rgba(239, 68, 68, 0.8),
+    rgba(255, 255, 255, 0)
+  );
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.24);
+}
+
+.fx-tracer.teal {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.95),
+    rgba(45, 212, 191, 0.75),
+    rgba(255, 255, 255, 0)
+  );
+  box-shadow: 0 0 24px rgba(45, 212, 191, 0.2);
+}
+
+.fx-tracer.green {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.95),
+    rgba(34, 197, 94, 0.75),
+    rgba(255, 255, 255, 0)
+  );
+  box-shadow: 0 0 24px rgba(34, 197, 94, 0.18);
+}
+
+.fx-tracer.blue {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.95),
+    rgba(56, 189, 248, 0.85),
+    rgba(255, 255, 255, 0)
+  );
+  box-shadow: 0 0 26px rgba(56, 189, 248, 0.26);
+}
+
+@keyframes tracer {
+  0% {
+    opacity: 0;
+    filter: none;
+    transform: translateZ(0) scaleX(0.15);
+  }
+  20% {
+    opacity: 1;
+    filter: none;
+  }
+  100% {
+    opacity: 0;
+    filter: none;
+    transform: translateZ(0) scaleX(1);
+  }
+}
+
+.fx-ring {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%) scale(0.3);
+  opacity: 0;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.25), transparent 60%),
+    radial-gradient(circle, rgba(56, 189, 248, 0.35), transparent 65%);
+  animation: ring 0.7s ease forwards;
+}
+
+.fx-ring.red {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.25), transparent 60%),
+    radial-gradient(circle, rgba(239, 68, 68, 0.35), transparent 65%);
+}
+
+.fx-ring.green {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.25), transparent 60%),
+    radial-gradient(circle, rgba(34, 197, 94, 0.3), transparent 65%);
+}
+
+.fx-ring.teal {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.25), transparent 60%),
+    radial-gradient(circle, rgba(45, 212, 191, 0.28), transparent 65%);
+}
+
+@keyframes ring {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.25);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+.fx-shard {
+  position: absolute;
+  width: 10px;
+  height: 4px;
+  border-radius: 4px;
+  transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+  mix-blend-mode: screen;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.92));
+  opacity: 0;
+  animation: shard 0.75s ease forwards;
+}
+
+.fx-shard.red {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(239, 68, 68, 0.92));
+}
+
+.fx-shard.green {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(34, 197, 94, 0.9));
+}
+
+.fx-shard.teal {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(45, 212, 191, 0.9));
+}
+
+.fx-shard.blue {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(56, 189, 248, 0.92));
+}
+
+@keyframes shard {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0.7);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + (var(--dx, 0) * 1px)), calc(-50% + (var(--dy, 0) * 1px))) rotate(var(--rot, 0deg))
+      scale(1);
+  }
+}
+
+.fx-flash.red {
+  background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(circle at 65% 35%, rgba(239, 68, 68, 0.42), transparent 55%);
+}
+
+.fx-flash.teal {
+  background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(circle at 65% 35%, rgba(45, 212, 191, 0.38), transparent 55%);
+}
+
+@keyframes flash {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @media (max-width: 900px) {
@@ -501,7 +906,7 @@ body::before {
   background: rgba(4, 10, 14, 0.7);
   display: grid;
   place-items: center;
-  backdrop-filter: blur(4px);
+  backdrop-filter: none;
 }
 
 .tutorial-overlay {
@@ -511,7 +916,18 @@ body::before {
   background: rgba(4, 10, 14, 0.58);
   display: grid;
   place-items: center;
-  backdrop-filter: blur(4px);
+  backdrop-filter: none;
+}
+
+.tutorial-overlay.floating {
+  background: transparent;
+  place-items: end;
+  padding: 14px;
+  pointer-events: none;
+}
+
+.tutorial-overlay.floating .tutorial-card {
+  pointer-events: auto;
 }
 
 .tutorial-overlay.hidden {
@@ -525,6 +941,26 @@ body::before {
   border: 1px solid rgba(255, 255, 255, 0.12);
   width: min(520px, 92%);
   box-shadow: var(--shadow);
+}
+
+.tutorial-focus {
+  outline: 3px solid rgba(56, 189, 248, 0.75);
+  outline-offset: 3px;
+  border-radius: 14px;
+  box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.12), 0 18px 40px rgba(56, 189, 248, 0.12);
+  animation: focusPulse 0.9s ease-in-out infinite;
+}
+
+@keyframes focusPulse {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.15);
+  }
+  100% {
+    filter: brightness(1);
+  }
 }
 
 .tutorial-kicker {
@@ -834,5 +1270,12 @@ body::before {
   * {
     transition: none !important;
     animation: none !important;
+  }
+
+  .fx-float,
+  .fx-spark,
+  .fx-beam,
+  .fx-burst {
+    opacity: 1 !important;
   }
 }
