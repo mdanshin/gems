@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Star Jewels</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="hero">
+        <div class="brand">
+          <div class="logo">J</div>
+          <div>
+            <h1 data-i18n="brand.title">Star Jewels</h1>
+            <p data-i18n="brand.tagline">Terran outpost under siege. Match to power weapons, shields, and repairs.</p>
+          </div>
+        </div>
+        <div class="controls">
+          <button id="newGame" class="btn primary" type="button" data-i18n="ui.newGame">New Game</button>
+          <button id="shuffle" class="btn ghost" type="button" data-i18n="ui.shuffle">Shuffle</button>
+          <button id="sound" class="btn ghost" type="button">Sound: On</button>
+          <button id="language" class="btn ghost" type="button">Language: EN</button>
+          <button id="tutorial" class="btn ghost" type="button" data-i18n="ui.tutorial">Tutorial</button>
+        </div>
+      </header>
+
+      <main class="board-area">
+        <div class="board-frame">
+          <div class="board-top">
+            <section class="stats" aria-label="Run stats" data-i18n-aria-label="aria.stats">
+              <div class="stat">
+                <span data-i18n="ui.wave">Wave</span>
+                <strong id="level">1</strong>
+              </div>
+              <div class="stat">
+                <span data-i18n="ui.credits">Credits</span>
+                <strong id="score">0</strong>
+              </div>
+              <div class="stat">
+                <span data-i18n="ui.enemy">Enemy</span>
+                <strong id="target">0</strong>
+              </div>
+              <div class="stat">
+                <span data-i18n="ui.time">Time</span>
+                <strong id="moves">0</strong>
+              </div>
+              <div class="stat">
+                <span data-i18n="ui.sync">Sync</span>
+                <strong id="combo">x1.0</strong>
+              </div>
+              <div class="stat">
+                <span data-i18n="ui.best">Best</span>
+                <strong id="best">0</strong>
+              </div>
+            </section>
+
+            <div class="board-top-row">
+              <section class="status-bars" aria-label="Combat status" data-i18n-aria-label="aria.combatStatus">
+                <div class="status-bar">
+                  <div class="status-bar-head">
+                    <span data-i18n="ui.baseIntegrity">Base Integrity</span>
+                    <strong id="baseReadout">100</strong>
+                  </div>
+                  <div class="progress" aria-hidden="true">
+                    <div id="baseFill" class="progress-fill base"></div>
+                  </div>
+                  <div id="baseSub" class="status-bar-sub"></div>
+                </div>
+                <div class="status-bar">
+                  <div class="status-bar-head">
+                    <span data-i18n="ui.enemyHull">Enemy Hull</span>
+                    <strong id="enemyReadout">0</strong>
+                  </div>
+                  <div class="progress" aria-hidden="true">
+                    <div id="enemyFill" class="progress-fill enemy"></div>
+                  </div>
+                  <div id="enemySub" class="status-bar-sub"></div>
+                </div>
+                <div class="status-bar">
+                  <div class="status-bar-head">
+                    <span data-i18n="ui.timeRemaining">Time Remaining</span>
+                    <strong id="timeReadout">0</strong>
+                  </div>
+                  <div class="progress" aria-hidden="true">
+                    <div id="timeFill" class="progress-fill time"></div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="hud" aria-label="Combat log" data-i18n-aria-label="aria.combatLog">
+                <div id="combatFeed" class="combat-feed" aria-live="polite"></div>
+              </section>
+            </div>
+          </div>
+
+          <div id="board" class="board" role="grid" aria-label="Jewels board" data-i18n-aria-label="aria.board"></div>
+
+          <div id="tutorialOverlay" class="tutorial-overlay hidden" role="dialog" aria-modal="true">
+            <div class="tutorial-card">
+              <div class="tutorial-kicker" id="tutorialKicker">1/5</div>
+              <h2 id="tutorialTitle">Tutorial</h2>
+              <p id="tutorialText">...</p>
+              <div class="tutorial-actions">
+                <button id="tutorialBack" class="btn ghost" type="button" data-i18n="ui.back">Back</button>
+                <button id="tutorialSkip" class="btn ghost" type="button" data-i18n="ui.skip">Skip</button>
+                <button id="tutorialNext" class="btn primary" type="button" data-i18n="ui.next">Next</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="overlay" class="overlay hidden" role="dialog" aria-modal="true">
+            <div class="overlay-card">
+              <h2 id="overlayTitle">Welcome</h2>
+              <p id="overlayText">Build your first cascade and chase the target.</p>
+              <button id="overlayButton" class="btn primary" type="button">
+                Start
+              </button>
+            </div>
+          </div>
+          <div id="toast" class="toast" aria-live="polite" data-i18n="ui.ready">Ready</div>
+        </div>
+        <aside class="sidebar">
+          <div class="card">
+            <h3 data-i18n="ui.briefing">Briefing</h3>
+            <p class="card-lede" data-i18n="ui.briefingText">
+              Match to generate orders. Orders resolve instantly, then the enemy fires.
+            </p>
+
+            <div class="legend" aria-label="Order legend" data-i18n-aria-label="aria.legend">
+              <div class="legend-row">
+                <span class="chip c-red" aria-hidden="true"></span>
+                <span data-i18n="ui.legend.red">Attack: deal damage</span>
+              </div>
+              <div class="legend-row">
+                <span class="chip c-yellow" aria-hidden="true"></span>
+                <span data-i18n="ui.legend.yellow">Amplify: boosts damage</span>
+              </div>
+              <div class="legend-row">
+                <span class="chip c-green" aria-hidden="true"></span>
+                <span data-i18n="ui.legend.green">Repair: restore base HP</span>
+              </div>
+              <div class="legend-row">
+                <span class="chip c-teal" aria-hidden="true"></span>
+                <span data-i18n="ui.legend.teal">Shields: absorb hits</span>
+              </div>
+              <div class="legend-row">
+                <span class="chip c-blue" aria-hidden="true"></span>
+                <span data-i18n="ui.legend.blue">EMP: reduce next enemy shot</span>
+              </div>
+              <div class="legend-row">
+                <span class="chip c-pink" aria-hidden="true"></span>
+                <span data-i18n="ui.legend.pink">Tactical: charges strikes</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 data-i18n="ui.specials">Specials</h3>
+            <div class="specials">
+              <div class="specials-row">
+                <span class="sigil stripe" aria-hidden="true"></span>
+                <span data-i18n="ui.specials.stripe">Match 4: line strike (row/column)</span>
+              </div>
+              <div class="specials-row">
+                <span class="sigil bomb" aria-hidden="true"></span>
+                <span data-i18n="ui.specials.bomb">Match 5: bomb (clears one color)</span>
+              </div>
+            </div>
+
+            <p class="card-note" data-i18n="ui.syncNote">
+              Cascades increase Sync and scale everything you do.
+            </p>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
