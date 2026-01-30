@@ -34,6 +34,8 @@
   const newGameBtn = document.getElementById("newGame");
   const shuffleBtn = document.getElementById("shuffle");
   const soundBtn = document.getElementById("sound");
+  const musicBtn = document.getElementById("music");
+  const musicVolumeEl = document.getElementById("musicVolume");
   const languageBtn = document.getElementById("language");
   const tutorialBtn = document.getElementById("tutorial");
   const campaignBtn = document.getElementById("campaign");
@@ -56,9 +58,106 @@
 
   const audio = { ctx: null };
 
+  const music = {
+    el: null,
+    enabled: true,
+    volume: 0.6,
+    started: false,
+    trackIndex: 0,
+  };
+
+  function loadMusicSettings() {
+    const enabled = localStorage.getItem("starJewelsMusicEnabled");
+    if (enabled === "0" || enabled === "1") {
+      music.enabled = enabled === "1";
+    }
+    const volume = Number(localStorage.getItem("starJewelsMusicVolume"));
+    if (!Number.isNaN(volume)) {
+      music.volume = Math.min(1, Math.max(0, volume));
+    }
+  }
+
+  function saveMusicSettings() {
+    localStorage.setItem("starJewelsMusicEnabled", music.enabled ? "1" : "0");
+    localStorage.setItem("starJewelsMusicVolume", String(music.volume));
+  }
+
+  function ensureMusicElement() {
+    if (music.el) return;
+    const el = new Audio();
+    el.preload = "auto";
+    el.loop = false;
+    el.volume = music.volume;
+    el.addEventListener("ended", () => {
+      if (!music.enabled) return;
+      music.trackIndex = (music.trackIndex + 1) % MUSIC_TRACKS.length;
+      el.src = MUSIC_TRACKS[music.trackIndex];
+      el.play().catch(() => {
+        // Ignore autoplay failures.
+      });
+    });
+    music.el = el;
+  }
+
+  function applyMusicUI() {
+    if (musicBtn) musicBtn.textContent = t(music.enabled ? "ui.musicOn" : "ui.musicOff");
+    if (musicVolumeEl) musicVolumeEl.value = String(Math.round(music.volume * 100));
+  }
+
+  function setMusicVolume(next) {
+    music.volume = Math.min(1, Math.max(0, next));
+    ensureMusicElement();
+    if (music.el) music.el.volume = music.volume;
+    saveMusicSettings();
+    applyMusicUI();
+  }
+
+  function setMusicEnabled(enabled) {
+    music.enabled = Boolean(enabled);
+    ensureMusicElement();
+    saveMusicSettings();
+    applyMusicUI();
+
+    if (!music.el) return;
+    if (!music.enabled) {
+      music.el.pause();
+      return;
+    }
+
+    // If the user enables music mid-session, try to start it.
+    startMusicFromUserGesture();
+  }
+
+  function startMusicFromUserGesture() {
+    ensureMusicElement();
+    if (!music.el || !music.enabled) return;
+
+    if (!music.el.src) {
+      music.trackIndex = Math.floor(Math.random() * MUSIC_TRACKS.length);
+      music.el.src = MUSIC_TRACKS[music.trackIndex];
+    }
+
+    music.el.volume = music.volume;
+    music.el
+      .play()
+      .then(() => {
+        music.started = true;
+      })
+      .catch(() => {
+        // Autoplay blocked; will try again on next gesture.
+      });
+  }
+
   const baseBarEl = baseFill ? baseFill.closest(".status-bar") : null;
   const enemyBarEl = enemyFill ? enemyFill.closest(".status-bar") : null;
   const timeBarEl = timeFill ? timeFill.closest(".status-bar") : null;
+
+  const MUSIC_TRACKS = [
+    "assets/audio/music/star-jewels-stellar-gems.mp3",
+    "assets/audio/music/star-jewels-stellar-gems-alt.mp3",
+    "assets/audio/music/star-jewels-shatter.mp3",
+    "assets/audio/music/star-jewels-shatter-alt.mp3",
+  ];
 
   const I18N = {
     en: {
@@ -118,6 +217,9 @@
 
       "ui.soundOn": "Sound: On",
       "ui.soundOff": "Sound: Off",
+      "ui.musicOn": "Music: On",
+      "ui.musicOff": "Music: Off",
+      "ui.musicVolume": "Music",
       "ui.language": "Language: {lang}",
       "ui.tutorial": "Tutorial",
       "ui.campaign": "Campaign",
@@ -272,6 +374,9 @@
 
       "ui.soundOn": "Звук: Вкл",
       "ui.soundOff": "Звук: Выкл",
+      "ui.musicOn": "Музыка: Вкл",
+      "ui.musicOff": "Музыка: Выкл",
+      "ui.musicVolume": "Музыка",
       "ui.language": "Язык: {lang}",
       "ui.tutorial": "Обучение",
       "ui.campaign": "Кампания",
@@ -421,6 +526,7 @@
     }
 
     soundBtn.textContent = t(game.sound ? "ui.soundOn" : "ui.soundOff");
+    applyMusicUI();
     if (languageBtn) {
       languageBtn.textContent = t("ui.language", { lang: lang.toUpperCase() });
     }
@@ -1105,6 +1211,9 @@
   function init() {
     boardEl.style.setProperty("--size", SIZE);
     setLanguage(detectInitialLanguage());
+    loadMusicSettings();
+    ensureMusicElement();
+    applyMusicUI();
     buildBoardUI();
     bindUI();
     loadBest();
@@ -1140,9 +1249,24 @@
   function bindUI() {
     boardEl.addEventListener("pointerdown", onPointerDown);
     boardEl.addEventListener("pointerup", onPointerUp);
-    newGameBtn.addEventListener("click", () => newGame());
+    newGameBtn.addEventListener("click", () => {
+      startMusicFromUserGesture();
+      newGame();
+    });
     shuffleBtn.addEventListener("click", () => shuffleBoard());
     soundBtn.addEventListener("click", () => toggleSound());
+    if (musicBtn) {
+      musicBtn.addEventListener("click", () => {
+        startMusicFromUserGesture();
+        setMusicEnabled(!music.enabled);
+      });
+    }
+    if (musicVolumeEl) {
+      musicVolumeEl.addEventListener("input", () => {
+        const v = Number(musicVolumeEl.value);
+        if (!Number.isNaN(v)) setMusicVolume(v / 100);
+      });
+    }
     if (languageBtn) {
       languageBtn.addEventListener("click", () => {
         setLanguage(lang === "ru" ? "en" : "ru");
@@ -1173,12 +1297,14 @@
         const action = overlayAction;
         overlayAction = null;
         hideOverlay();
+        startMusicFromUserGesture();
         action();
       }
     });
   }
 
   function onPointerDown(event) {
+    startMusicFromUserGesture();
     if (game.busy) return;
     const cell = getCellFromEvent(event);
     if (!cell) return;

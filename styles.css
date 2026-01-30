@@ -102,6 +102,29 @@ body::before {
   flex-wrap: wrap;
 }
 
+.range {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+}
+
+.range span {
+  color: rgba(248, 243, 231, 0.72);
+  font-size: 0.82rem;
+  letter-spacing: 0.4px;
+}
+
+.range input[type="range"] {
+  width: 130px;
+}
+
 .btn {
   border: none;
   border-radius: 999px;
